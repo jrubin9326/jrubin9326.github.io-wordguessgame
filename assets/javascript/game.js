@@ -6,16 +6,17 @@ var currentWord = document.getElementById("currentWord-text")
 var wrongGuesses = document.getElementById("guesses")
 var allowedGuesses = document.getElementById("lettersRemaining-text")
 var guessedWord = document.getElementById("guessedWord"); 
-var word; 
+var win = 0
+var numberOfWins = document.getElementById("numberOfWins");
 var maxTries = 10
-var remainingGuesses = 0
 // array to hold answers 
 var options = ["Omen", "Sixth Sense", "Silence of the Lambs", "Scream", "Hocus Pocus", "Carrie", "Beetlejuice"]
 var choice = Math.floor(Math.random()*7);
-var answer = options[choice]; 
+var answer = (options[choice]).toLowerCase(); 
 var wordLength = answer.length; 
 var targetDiv = document.getElementById("currentWord-text")
-
+var wrongLettersText = document.getElementById("wrongLettersText")
+var guessesRemaining = document.getElementById("guessesRemaining")
 //function for how game should look when it is started / reset 
 
 
@@ -38,47 +39,71 @@ var guessedLetters = []
 
 
 //  number of guesses remaining should be equal to maxTries
-    let guessesLeft = document.createElement("div")
-    guessesLeft.textContent = maxTries; 
-    wrongGuesses.appendChild(guessesLeft);
+
+    guessesRemaining.textContent = maxTries; 
+    wrongGuesses.appendChild(guessesRemaining);
 
 
     
 // function to play game
 wrongLetterArray = []
+var userAnswer = []
+
+function restartGame () {
+    if (win === -1) {
+        document.getElementById("guessesRemaining").innerHTML = 10
+        document.getElementById("wrongLettersText").innerHTML = []
+        document.getElementById("guessedWord").innerHTML = guessedLetters; 
+    }
+}
+
  function start (letter) {
     
     for ( var i in answer) {
         if (answer [i] === letter) {
            guessedLetters[i] = letter;
+           userAnswer = letter 
+           console.log(userAnswer)
            document.getElementById("guessedWord").innerHTML = guessedLetters.join(""); 
-           
+            
             }
         }   
         var wrong = (answer.indexOf(letter)) 
         if (wrong === -1) {
             wrongLetterArray.push(letter); 
-            let wrongArray = document.createElement("div")
-            wrongArray.textContent = wrongLetterArray
-            allowedGuesses.appendChild(wrongArray);
+            wrongLettersText.textContent = wrongLetterArray
+            allowedGuesses.appendChild(wrongLettersText);
+            maxTries --
+            document.getElementById("guessesRemaining").innerHTML = maxTries;
+            ; 
             }
+        if (maxTries === 0) {
+            document.getElementById("gameOver").innerHTML = "Game Over"
+        }
+        win = (guessedLetters.indexOf("_"))
+        if (win === -1) {
+            document.getElementById("gameOver").innerHTML = answer
+            wins ++
+            document.getElementById("numberOfWins").innerHTML = wins; 
+
+        }
+
+        restartGame()
+
+        
     }
 
-    
-    // console.log(guessedLetters)
-    // document.getElementById("guessedWord").innerHTML = guessedLetters.join(""); 
-    // document.getElementById("guessesLeft").innerHTML = maxTries
-    
-    
-//  with that letter
-//  if letter === answer then game is won 
-//  when game is won, update new word
-
-//  if letter is incorrect then update wrong letters
+function restartGame () {
+    if (win === -1) {
+        document.getElementById("guessesRemaining").innerHTML = 10
+        document.getElementById("wrongLettersText").innerHTML = []
+    }
+}
 
 
-//  if wrong letters is equal to >10 then game is over
-//  when game is lose update new word 
-
+document.onkeydown = function(event) {
+    var userGuessedLetter = String.fromCharCode(event.keyCode).toLowerCase();
+    start(userGuessedLetter)
+}
 
 
